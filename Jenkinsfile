@@ -22,14 +22,14 @@ pipeline {
             steps{
                 echo "Building image"
                 script {
-                    dockerImg = docker.build("${img}")
+                    dockerImg = docker.build("${params.img}")
                 }
             }
         }
         stage('Run') {
             steps{
                 echo "Running Image"
-                sh returnStdout: true, script: "docker run --rm -d --name my-blazor-app -p 8089:8080 ${img} "
+                sh returnStdout: true, script: "docker run --rm -d --name my-blazor-app -p 8089:8080 ${params.img} "
             }
         }
     }
