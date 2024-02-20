@@ -1,66 +1,36 @@
 pipeline {
     agent any
-    
-    environment {
-        DOCKER_IMAGE = 'my-blazor-app'
+    tools {
+        maven 'MAVEN'
     }
-    
+
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: ''
+                sh 'ls -la'
+            }
+        }
+        stage('Stop running Container') {
+            steps{
+              sh returnStatus: true, script: 'docker stop $(docker ps -a | grep my-blazor-app | awk \'{print $1}\')'
+              sh returnStatus: true, script: 'docker rmi $(docker images | grep my-blazor-app | awk \'{print $3}\')'
+              sh returnStatus: true, script: 'docker rm my-blazor-app'
+            }
+        }
         stage('Build') {
-            steps {
+            steps{
+                echo "Building image"
                 script {
-                    // Clean previous build artifacts
-                    sh 'dotnet clean'
-                    
-                    // Restore NuGet packages
-                    sh 'dotnet restore'
-                    
-                    // Build the application
-                    sh 'dotnet build --configuration Release'
+                    dockerImg = docker.build("${img}")
                 }
             }
         }
-        
-        stage('Test') {
-            steps {
-                // You can add test steps here if applicable
+        stage('Run') {
+            steps{
+                echo "Running Image"
+                sh returnStdout: true, script: "docker run --rm -d --name my-blazor-app -p 8089:8080 ${img} "
             }
-        }
-        
-        stage('Package') {
-            steps {
-                script {
-                    // Publish the application
-                    sh 'dotnet publish --no-build --configuration Release -o ./publish'
-                    
-                    // Copy Dockerfile to the publish directory
-                    sh 'cp Dockerfile ./publish'
-                }
-            }
-        }
-        
-        stage('Docker Build & Deploy') {
-            steps {
-                script {
-                    // Remove existing Docker image
-                    sh "docker rmi -f ${env.DOCKER_IMAGE} || true"
-                    
-                    // Build Docker image
-                    docker.build(env.DOCKER_IMAGE, './publish')
-                    
-                    // Run Docker container
-                    docker.image(env.DOCKER_IMAGE).withRun('-p 8080:80') {
-                        // Container is running
-                    }
-                }
-            }
-        }
-    }
-    
-    post {
-        always {
-            // Cleanup workspace
-            cleanWs()
         }
     }
 }
