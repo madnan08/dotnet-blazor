@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: ''
+                git branch: 'main', url: 'https://github.com/abubakar1o/dotnet-blazor.git'
                 sh 'ls -la'
             }
         }
