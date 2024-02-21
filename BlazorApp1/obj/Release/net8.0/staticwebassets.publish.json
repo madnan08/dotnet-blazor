@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "Hash": "NpQULD08j9qlMvNaRldwcGdY/hpBTBEpxsvgVBfi3Gk=",
+  "Hash": "uAgAqX83GncuGJumhgf9scjebeeihu4mghcJUKpc65I=",
   "Source": "BlazorApp1",
   "BasePath": "_content/BlazorApp1",
   "Mode": "Default",
-  "ManifestType": "Build",
+  "ManifestType": "Publish",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [
     {

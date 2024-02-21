@@ -1,0 +1,7 @@
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/BlazorApp1
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/appsettings.Development.json
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/appsettings.json
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/BlazorApp1.dll
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/BlazorApp1.deps.json
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/BlazorApp1.runtimeconfig.json
+/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/published/BlazorApp1.pdb
