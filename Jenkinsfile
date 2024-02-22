@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        PATH = "/usr/bin/dotnet:$PATH"
+        DOTNET_HOME = "/usr/bin/dotnet"
         DOTNET_VERSION = "8.0"
         DOTNET_RUNTIME = "net${DOTNET_VERSION}"
         APP_NAME = "BlazorApp1"
