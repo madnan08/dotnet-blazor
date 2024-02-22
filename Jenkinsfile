@@ -34,7 +34,11 @@ pipeline {
         stage('Test') {
             steps {
                 // Run tests if applicable
+<<<<<<< HEAD
                sh "dotnet test ${APP_NAME}"
+=======
+                // Example: sh "dotnet test ${APP_NAME}"
+>>>>>>> b37cda5fe330d731271d887754c70fd53adf5ba4
             }
         }
         
