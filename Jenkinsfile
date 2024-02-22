@@ -48,7 +48,7 @@ pipeline {
         stage('Run Application') {
             steps {
                 // Run the application
-                dotnet ${APP_NAME}.dll
+                dotnet BlazorApp1.dll
             }
         }
     }
