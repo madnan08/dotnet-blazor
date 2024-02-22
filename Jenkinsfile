@@ -1,35 +1,54 @@
 pipeline {
     agent any
-    tools {
-        maven 'MAVEN'
+    
+    environment {
+        DOTNET_VERSION = "8.0"
+        DOTNET_RUNTIME = "net${DOTNET_VERSION}"
+        APP_NAME = "BlazorApp1"
+        BUILD_CONFIGURATION = "Release"
+        DOTNET_PATH = "/home/abubakar/java/dot-net/dotnet-blazor/${APP_NAME}/bin/${BUILD_CONFIGURATION}/${DOTNET_RUNTIME}"
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/abubakar1o/dotnet-blazor.git'
-                sh 'ls -la'
+                // Checkout the source code from the repository
+                git branch: 'main', url: 'https://github.com/your-repo-url.git'
             }
         }
-        stage('Stop running Container') {
-            steps{
-              sh returnStatus: true, script: 'docker stop $(docker ps -a | grep my-blazor-app | awk \'{print $1}\')'
-              sh returnStatus: true, script: 'docker rmi $(docker images | grep my-blazor-app | awk \'{print $3}\')'
-              sh returnStatus: true, script: 'docker rm my-blazor-app'
+        
+        stage('Restore') {
+            steps {
+                // Restore NuGet packages
+                sh "dotnet restore ${APP_NAME}"
             }
         }
+        
         stage('Build') {
-            steps{
-                echo "Building image"
-                script {
-                    dockerImg = docker.build("${params.img}")
-                }
+            steps {
+                // Build the application
+                sh "dotnet build ${APP_NAME} --configuration ${BUILD_CONFIGURATION}"
             }
         }
-        stage('Run') {
-            steps{
-                echo "Running Image"
-                sh returnStdout: true, script: "docker run --rm -d --name my-blazor-app -p 8089:8080 ${params.img} "
+        
+        stage('Test') {
+            steps {
+                // Run tests if applicable
+                // Example: sh "dotnet test ${APP_NAME}"
+            }
+        }
+        
+        stage('Publish') {
+            steps {
+                // Publish the application
+                sh "dotnet publish ${APP_NAME} --configuration ${BUILD_CONFIGURATION} --output ${DOTNET_PATH}"
+            }
+        }
+        
+        stage('Run Application') {
+            steps {
+                // Run the application
+                sh "dotnet ${DOTNET_PATH}/${APP_NAME}.dll"
             }
         }
     }
