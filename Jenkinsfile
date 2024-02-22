@@ -21,35 +21,35 @@ pipeline {
         stage('Restore') {
             steps {
                 // Restore NuGet packages
-                sh "dotnet restore ${APP_NAME}"
+                bat "dotnet restore ${APP_NAME}"
             }
         }
         
         stage('Build') {
             steps {
                 // Build the application
-                sh "dotnet build ${APP_NAME} --configuration ${BUILD_CONFIGURATION}"
+                bat "dotnet build ${APP_NAME} --configuration ${BUILD_CONFIGURATION}"
             }
         }
         
         stage('Test') {
             steps {
                 // Run tests if applicable
-                sh "dotnet test ${APP_NAME}"
+                bat "dotnet test ${APP_NAME}"
             }
         }
         
         stage('Publish') {
             steps {
                 // Publish the application
-                sh "dotnet publish ${APP_NAME} --configuration ${BUILD_CONFIGURATION} --output ${DOTNET_PATH}"
+                bat "dotnet publish ${APP_NAME} --configuration ${BUILD_CONFIGURATION} --output ${DOTNET_PATH}"
             }
         }
         
         stage('Run Application') {
             steps {
                 // Run the application
-                sh "dotnet ${DOTNET_PATH}/${APP_NAME}.dll"
+                bat "dotnet ${DOTNET_PATH}/${APP_NAME}.dll"
             }
         }
     }
