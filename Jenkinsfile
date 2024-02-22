@@ -2,11 +2,12 @@ pipeline {
     agent any
     
     environment {
+        PATH = "/usr/bin/dotnet:$PATH"
         DOTNET_VERSION = "8.0"
         DOTNET_RUNTIME = "net${DOTNET_VERSION}"
         APP_NAME = "BlazorApp1"
         BUILD_CONFIGURATION = "Release"
-        DOTNET_PATH = "/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/bin/Release/net8.0"
+        DOTNET_PATH = "/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/bin/${BUILD_CONFIGURATION}/${DOTNET_RUNTIME}"
     }
     
     stages {
@@ -27,28 +28,28 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the application
-                dotnetBuild project: '/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/bin/Release/net8.0', sdk: 'dotnet'
+                sh "dotnet build ${APP_NAME} --configuration ${BUILD_CONFIGURATION}"
             }
         }
         
         stage('Test') {
             steps {
                 // Run tests if applicable
-               sh "dotnet test ${APP_NAME}"
+                sh "dotnet test ${APP_NAME}"
             }
         }
         
         stage('Publish') {
             steps {
                 // Publish the application
-                dotnetNuGetPush root: '/home/abubakar/java/dot-net/dotnet-blazor/BlazorApp1/bin/Release/net8.0', sdk: 'dotnet', source: 'https://api.nuget.org/v3/index.json'
+                sh "dotnet publish ${APP_NAME} --configuration ${BUILD_CONFIGURATION} --output ${DOTNET_PATH}"
             }
         }
         
         stage('Run Application') {
             steps {
                 // Run the application
-                dotnet BlazorApp1.dll
+                sh "dotnet ${DOTNET_PATH}/${APP_NAME}.dll"
             }
         }
     }
