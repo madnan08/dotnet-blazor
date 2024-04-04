@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: blazor-app
-          image: blazor-app:latest
+          image: regdemo3.azurecr.io/blazor-app
           ports:
             - containerPort: 80
