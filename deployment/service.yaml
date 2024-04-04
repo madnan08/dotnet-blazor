@@ -7,7 +7,6 @@ spec:
     app: blazor-app
   ports:
     - protocol: TCP
-      port: 8089
-      targetPort: 8089s
-  type: NodePort
-
+      port: 80
+      targetPort: 8089
+  type: LoadBalancer
