@@ -1,1 +1,28 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/blazorapp:$SHORT_SHA', '.']
 
+  # Push the Docker image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/DotNet CICD:$SHORT_SHA']
+
+  # Update the Kubernetes deployment with the new image
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'set'
+      - 'image'
+      - 'deployment/blazorapp-deployment'
+      - 'blazorapp=gcr.io/$PROJECT_ID/blazorapp:$SHORT_SHA'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=your-compute-zone'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=your-cluster-name'
+
+# Specify which images to store in the Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/blazorapp:$SHORT_SHA'
+
+# Optionally, define timeouts or logging settings
+timeout: "1200s"  # Timeout for the entire build process, e.g., 20 minutes
+options:
+  logging: CLOUD_LOGGING_ONLY  # Ensures that logs are available in the Cloud Console
