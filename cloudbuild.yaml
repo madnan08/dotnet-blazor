@@ -1,28 +1,26 @@
 steps:
-  # Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/dotnet-cicd-422508/blazorapp:$SHORT_SHA', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/dotnet-cicd-422508/gke-repo/blazor-app', './app1' ]
+  id: 'Build Docker Image'
 
-  # Push the Docker image to Google Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/dotnet-cicd-422508/DotNet CICD:$SHORT_SHA']
+  # images:
+  # - 'us-central1-docker.pkg.dev/<your_project_id>/gke-repo/quickstart-image'
 
-  # Update the Kubernetes deployment with the new image
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'set'
-      - 'image'
-      - 'deployment/blazorapp-deployment'
-      - 'blazorapp=gcr.io/dotnet-cicd-422508/blazorapp:$SHORT_SHA'
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=	cluster-1'
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/dotnet-cicd-422508/gke-repo/blazor-app' ]
+  id: 'Push Docker Image'
 
-# Specify which images to store in the Container Registry
-images:
-  - 'gcr.io/$PROJECT_ID/blazorapp:$SHORT_SHA'
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    gcloud container clusters get-credentials "cluster-1" --zone "us-central1-c" --project "dotnet-cicd-422508"
 
-# Optionally, define timeouts or logging settings
-timeout: "1200s"  # Timeout for the entire build process, e.g., 20 minutes
-options:
-  logging: CLOUD_LOGGING_ONLY  # Ensures that logs are available in the Cloud Console
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'deployment/blazor.yaml']
+  args: ['apply', '-f', 'deployment/ingress.yaml']
+  args: ['apply', '-f', 'deployment/service.yaml']
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
