@@ -3,9 +3,6 @@ steps:
   args: ['build', '-t', 'us-central1-docker.pkg.dev/dotnet-cicd-422508/gke-repo/blazor-app', './blazor-app' ]
   id: 'Build Docker Image'
 
-  # images:
-  # - 'us-central1-docker.pkg.dev/<your_project_id>/gke-repo/quickstart-image'
-
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/dotnet-cicd-422508/gke-repo/blazor-app' ]
   id: 'Push Docker Image'
@@ -19,8 +16,18 @@ steps:
 
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'deployment/blazor.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+
+- name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'deployment/ingress.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+
+- name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'deployment/service.yaml']
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
