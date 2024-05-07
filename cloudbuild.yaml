@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/dotnet-cicd-422508/gke-repo/blazor-app', './app1' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/dotnet-cicd-422508/gke-repo/blazor-app', './blazor-app' ]
   id: 'Build Docker Image'
 
   # images:
